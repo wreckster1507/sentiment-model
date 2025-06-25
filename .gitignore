@@ -29,7 +29,7 @@ Thumbs.db
 *.temp
 
 # Model files that are too large (if any)
-# *.pth
+*.pth
 
 # Test files
 test_*.py
