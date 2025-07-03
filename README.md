@@ -153,18 +153,18 @@ This is a **production-ready multimodal sentiment analysis system** that provide
 ## 📁 File Structure
 
 ```
-c:\sentiment-model\
-├── 📄 models.py                     # Model architecture definitions
+sentiment-model/
+├── 📄 models.py                     # Neural network model architecture
 ├── 📄 local_deploy_v2.py           # Production FastAPI server (MAIN)
 ├── 📄 local_inference.py           # Processing utilities & feature extraction
 ├── 📄 requirements.txt             # Python dependencies
 ├── 📄 README.md                    # This documentation
-├── 📄 install_ffmpeg_windows.py   # FFmpeg setup script
-├── 📄 performance_analysis.py     # Performance monitoring tools
-└── 📁 aisentiment/                # Virtual environment
-    ├── 📁 Scripts/                # Python executables
-    ├── 📁 Lib/                    # Installed packages (PyTorch, FastAPI, etc.)
-    └── 📄 pyvenv.cfg              # Environment configuration
+├── 📄 ARCHITECTURE.md              # System architecture details
+├── 📄 start_production.py          # Production startup script
+├── � .gitignore                   # Git ignore rules
+└── 📁 model/                       # Model files (auto-downloaded)
+    ├── � model.pth                # Trained model weights (545MB)
+    └── 📄 metrics.json             # Model performance metrics
 ```
 
 ### 🔑 **Core Files:**
@@ -259,10 +259,11 @@ c:\sentiment-model\
 
 ### 1. **Environment Setup**
 ```bash
-# Clone or download the project
-cd c:\sentiment-model
+# Clone the repository
+git clone https://github.com/wreckster1507/sentiment-model.git
+cd sentiment-model
 
-# Create virtual environment (if not exists)
+# Create virtual environment
 python -m venv aisentiment
 
 # Activate environment
@@ -275,34 +276,40 @@ pip install -r requirements.txt
 
 ### 2. **Install FFmpeg** (Required for audio processing)
 ```bash
-# Option 1: Run the setup script
-python install_ffmpeg_windows.py
+# For production deployment (Render, Heroku, etc.)
+# FFmpeg is usually pre-installed
 
-# Option 2: Manual installation
-# Download from https://ffmpeg.org/download.html
-# Add to system PATH
+# For local development:
+# Windows: Download from https://ffmpeg.org/download.html and add to PATH
+# Linux: sudo apt install ffmpeg
+# Mac: brew install ffmpeg
 ```
 
 ### 3. **Model Setup**
-Ensure your trained model file is available:
+The trained model is automatically downloaded during first startup from Google Drive:
 ```
-C:\Users\[username]\Downloads\model-[timestamp]\model\model.pth
+📂 Project Structure:
+sentiment-model/
+├── model/
+│   ├── model.pth      # Downloaded automatically
+│   └── metrics.json   # Model performance metrics
+├── local_deploy_v2.py # Main server
+└── ...other files
 ```
 
-Update the path in `local_deploy_v2.py` if different:
-```python
-model_path = r"C:\Users\sarthu\Downloads\model-20250614T082123Z-1-001\model\model.pth"
-```
+The server will automatically create the `model/` directory and download the model file when first started.
 
 ### 4. **Start the Server**
 ```bash
-# Activate environment
-.\aisentiment\Scripts\activate
+# Activate environment (if not already active)
+.\aisentiment\Scripts\activate  # Windows
+# source aisentiment/bin/activate  # Linux/Mac
 
 # Start production server
 python local_deploy_v2.py
 
 # Server will start on http://127.0.0.1:8000
+# The model will be automatically downloaded on first run
 ```
 
 ## 💻 Usage Examples
@@ -364,24 +371,24 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 
 ## 🏭 Production Deployment
 
-### **Performance Optimization**
-- **GPU Acceleration**: Install CUDA PyTorch for 3-5x speed improvement
-- **Memory Management**: Server automatically cleans up temporary files
-- **Concurrent Processing**: FastAPI supports async requests
-- **Caching**: Consider Redis for frequently accessed videos
+### **Render Deployment (Recommended)**
 
-### **Scaling Options**
-- **Docker**: Containerize for easy deployment
-- **Load Balancer**: Use nginx for multiple server instances
-- **Cloud Deployment**: AWS EC2, Google Cloud, or Azure
-- **Kubernetes**: For large-scale production
+1. **Fork/Clone Repository**: `https://github.com/wreckster1507/sentiment-model.git`
+2. **Connect to Render**: Create new Web Service
+3. **Configuration**:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python local_deploy_v2.py`
+   - **Environment**: Python 3.8+
+   - **Plan**: Choose based on expected traffic
 
-### **Monitoring**
-```python
-# Check server status
-response = requests.get("http://127.0.0.1:8000/health")
-print(response.json())  # {"status": "healthy", "model_loaded": true}
-```
+### **Environment Variables (Optional)**
+- `HOST`: Server host (default: auto-detected)
+- `PORT`: Server port (default: auto-detected by platform)
+
+### **Model Download**
+- The 545MB model file downloads automatically on first startup
+- Initial startup may take 2-3 minutes for model download
+- Subsequent startups are much faster
 
 ### Prerequisites
 - Python 3.8+
@@ -687,9 +694,9 @@ class MultimodalSentimentModel(nn.Module):
 Error: Model file not found
 ```
 **Solution:**
-- Check model path in `local_deploy_v2.py` line ~292
-- Ensure `model.pth` exists at the specified location
-- Update path to match your downloaded model
+- The model will be automatically downloaded on first startup
+- Ensure you have internet connection for the initial download
+- If download fails, manually download from the Google Drive link provided
 
 #### **2. CORS Errors in Browser**
 ```
@@ -705,10 +712,11 @@ Access to fetch blocked by CORS policy
 ```
 **Solution:**
 ```bash
-# Run the installer
-python install_ffmpeg_windows.py
-
-# Or install manually and add to PATH
+# Install FFmpeg for your platform:
+# Windows: Download from https://ffmpeg.org and add to PATH
+# Linux: sudo apt install ffmpeg
+# Mac: brew install ffmpeg
+# Render/Heroku: Usually pre-installed
 ```
 
 #### **4. Out of Memory**
@@ -727,7 +735,8 @@ ModuleNotFoundError: No module named 'transformers'
 **Solution:**
 ```bash
 # Activate virtual environment
-.\aisentiment\Scripts\activate
+.\aisentiment\Scripts\activate  # Windows
+# source aisentiment/bin/activate  # Linux/Mac
 
 # Reinstall dependencies
 pip install -r requirements.txt
