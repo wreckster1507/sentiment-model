@@ -30,6 +30,8 @@ Thumbs.db
 
 # Model files that are too large (if any)
 *.pth
+model/
+model/*
 
 # Test files
 test_*.py

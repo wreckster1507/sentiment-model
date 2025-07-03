@@ -16,6 +16,9 @@
 
 This is a **production-ready multimodal sentiment analysis system** that provides real-time sentiment and emotion analysis from video content. The system processes video files and returns time-segmented analysis with speech transcription.
 
+**🔗 Model Download:** The trained model is automatically downloaded from Google Drive during first startup.  
+**📎 Model Link:** [Download Model](https://drive.google.com/drive/folders/1E6jn1B_emVdMvo9p84RNBs4C9QTWTMPd?usp=drive_link)
+
 ### 🎯 What It Does:
 - **Video Upload**: Accepts video files via web interface or API
 - **Speech-to-Text**: Transcribes dialogue using OpenAI Whisper
