@@ -486,7 +486,7 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 
 3. **Model Path Resolution:**
    ```python
-   model_path = r"C:\Users\sarthu\Downloads\model-20250614T082123Z-1-001\model\model.pth"
+   model_path = r"C:\Users\<Name>\Downloads\model\model.pth"
    ```
 
 ### Input Processing Details
